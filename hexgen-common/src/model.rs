@@ -1,4 +1,5 @@
 use russimp::scene::{PostProcess, Scene};
+use tracing::info;
 use crate::mesh::Mesh;
 
 pub struct Model{
@@ -19,6 +20,7 @@ impl Model{
                                           PostProcess::JoinIdenticalVertices,
                                           PostProcess::SortByPrimitiveType]).unwrap_or_else(||{panic!("Couldn't load provided model")});
 
+        info!("Loaded scene from filepath {}", file_path);
         for mesh in scene.meshes {
             self.meshes.push(Mesh::load_mesh(mesh));
         }

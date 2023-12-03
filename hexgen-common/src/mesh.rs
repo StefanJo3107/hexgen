@@ -1,4 +1,5 @@
 use std::num::FpCategory::Normal;
+use tracing::info;
 use crate::normal::Normal;
 use crate::texture::Texture;
 use crate::vertex::Vertex;
@@ -43,6 +44,7 @@ impl Mesh {
             }
         }
 
+        info!("Loaded mesh");
         return mesh;
     }
 
