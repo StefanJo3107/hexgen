@@ -2,5 +2,6 @@
 members = [
     "hexgen-renderer",
     "hexgen-generator",
-    "hexgen-common"
+    "hexgen-common",
+    "hexgen-core"
 ]

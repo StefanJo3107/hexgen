@@ -1,38 +1,31 @@
-use glium::Surface;
+use glium::{Display, Surface};
+use glium::glutin::surface::WindowSurface;
 use tracing::info;
+use winit::event::Event;
+use winit::event_loop::{ControlFlow};
 
-pub struct Renderer {
-
-}
+pub struct Renderer {}
 
 impl Renderer {
-    pub fn run() {
-        info!("Window creation started");
-        let event_loop = winit::event_loop::EventLoopBuilder::new().build();
-        let (window, display) = glium::backend::glutin::SimpleWindowBuilder::new().build(&event_loop);
-        info!("Window creation finished");
-
-        event_loop.run(move |ev, _, control_flow| {
-            match ev {
-                winit::event::Event::WindowEvent { event, .. } => match event {
-                    winit::event::WindowEvent::CloseRequested => {
-                        *control_flow = winit::event_loop::ControlFlow::Exit;
-                    }
-                    winit::event::WindowEvent::Resized(window_size) => {
-                        display.resize(window_size.into());
-                    }
-                    _ => ()
-                },
-                winit::event::Event::RedrawEventsCleared => {
-                    window.request_redraw();
+    pub fn render(display: &Display<WindowSurface>){
+        let mut frame = display.draw();
+        frame.clear_color_and_depth((1.0, 1.0, 1.0, 1.0), 1.0);
+        frame.finish().unwrap();
+    }
+    pub fn window_event_handler(event: &Event<()>, display: &Display<WindowSurface>, control_flow: &mut ControlFlow) {
+        match event {
+            Event::WindowEvent { event, .. } => match event {
+                winit::event::WindowEvent::CloseRequested => {
+                    info!("Window close event triggered");
+                    *control_flow = ControlFlow::Exit;
                 }
-                winit::event::Event::RedrawRequested(_) => {
-                    let mut frame = display.draw();
-                    frame.clear_color_and_depth((1.0, 1.0, 1.0, 1.0), 1.0);
-                    frame.finish().unwrap();
+                winit::event::WindowEvent::Resized(window_size) => {
+                    info!("Window resized event triggered");
+                    display.resize((window_size.width, window_size.height));
                 }
                 _ => ()
-            }
-        });
+            },
+            _ => ()
+        }
     }
 }
