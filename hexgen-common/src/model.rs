@@ -24,5 +24,6 @@ impl Model{
         for mesh in scene.meshes {
             self.meshes.push(Mesh::load_mesh(mesh));
         }
+        info!("Loaded model");
     }
 }

@@ -25,7 +25,7 @@ pub struct GameLoop {
 }
 
 impl GameLoop {
-    pub fn new(updates_per_second: usize, max_frame_time: f64, window: winit::window::Window) -> GameLoop {
+    pub fn new(updates_per_second: usize, max_frame_time: f64, window: Window) -> GameLoop {
         GameLoop {
             updates_per_second,
             max_frame_time,
