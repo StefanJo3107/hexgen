@@ -7,6 +7,10 @@ use winit::event_loop::{ControlFlow};
 pub struct Renderer {}
 
 impl Renderer {
+    pub fn init(){
+
+    }
+
     pub fn render(display: &Display<WindowSurface>){
         let mut frame = display.draw();
         frame.clear_color_and_depth((1.0, 1.0, 1.0, 1.0), 1.0);

@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 russimp = "2.0.6"
 tracing = "0.1"
+glium="0.33.0"
