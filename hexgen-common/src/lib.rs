@@ -1,9 +1,6 @@
 pub mod model;
-pub mod vertex;
-pub mod normal;
-pub mod texture;
-pub mod mesh;
-mod game_object;
-mod vector3;
-mod shader;
-mod material;
+pub mod game_object;
+pub mod vector3;
+pub mod material;
+pub mod transform;
+pub mod matrix;

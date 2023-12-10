@@ -44,12 +44,15 @@ impl GameLoop {
         }
     }
 
-    pub fn run<U, R, H>(updates_per_second: usize, max_frame_time: f64, event_loop: EventLoop<()>, window: Window, display: Display<WindowSurface>, mut update: U, mut render: R, mut event_handler: H)
-        where U: FnMut(&mut GameLoop) + 'static,
+    pub fn run<I, U, R, H>(updates_per_second: usize, max_frame_time: f64, event_loop: EventLoop<()>, window: Window, display: Display<WindowSurface>, mut init: I, mut update: U, mut render: R, mut event_handler: H)
+        where I: FnMut(&mut GameLoop, &Display<WindowSurface>) + 'static,
+              U: FnMut(&mut GameLoop) + 'static,
               R: FnMut(&mut GameLoop, &Display<WindowSurface>) + 'static,
               H: FnMut(&mut GameLoop, &Event<()>, &Display<WindowSurface>, &mut ControlFlow) + 'static
     {
         let mut game_loop = GameLoop::new(updates_per_second, max_frame_time, window);
+        init(&mut game_loop, &display);
+        
         event_loop.run(move |event, _, control_flow| {
             *control_flow = ControlFlow::Poll;
 
@@ -60,14 +63,14 @@ impl GameLoop {
                     if !game_loop.next_frame(&display, &mut update, &mut render) {
                         *control_flow = ControlFlow::Exit;
                     }
-                },
+                }
                 Event::MainEventsCleared => {
                     game_loop.window.request_redraw();
-                },
+                }
                 Event::WindowEvent { event: WindowEvent::Occluded(occluded), .. } => {
                     game_loop.window_occluded = occluded;
-                },
-                _ => {},
+                }
+                _ => {}
             }
         })
     }

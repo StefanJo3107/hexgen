@@ -16,6 +16,9 @@ fn main() {
     let (window, display) = glium::backend::glutin::SimpleWindowBuilder::new().build(&event_loop);
 
     GameLoop::run(240, 0.1, event_loop, window, display,
+                  |_g, display|{
+
+                  },
                   |_g| {
                       return;
                   },

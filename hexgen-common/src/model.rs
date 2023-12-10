@@ -1,28 +1,31 @@
 use russimp::scene::{PostProcess, Scene};
 use tracing::info;
-use crate::mesh::Mesh;
+use crate::material::Material;
+use crate::model::mesh::Mesh;
 
-pub struct Model{
+pub mod mesh;
+
+pub struct Model {
     meshes: Vec<Mesh>,
 }
 
-impl Model{
-    pub fn new() -> Model{
-        Model{
+impl Model {
+    pub fn new() -> Model {
+        Model {
             meshes: vec![]
         }
     }
 
-    pub fn load_model(&mut self, file_path: &str) {
+    pub fn load_model(&mut self, file_path: &str, material: Material) {
         let scene = Scene::from_file(file_path,
                                      vec![PostProcess::CalculateTangentSpace,
                                           PostProcess::Triangulate,
                                           PostProcess::JoinIdenticalVertices,
-                                          PostProcess::SortByPrimitiveType]).unwrap_or_else(||{panic!("Couldn't load provided model")});
+                                          PostProcess::SortByPrimitiveType]).unwrap_or_else(|_| { panic!("Couldn't load provided model") });
 
         info!("Loaded scene from filepath {}", file_path);
         for mesh in scene.meshes {
-            self.meshes.push(Mesh::load_mesh(mesh));
+            self.meshes.push(Mesh::load_mesh(mesh, material.clone()));
         }
         info!("Loaded model");
     }

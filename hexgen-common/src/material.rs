@@ -1,7 +1,10 @@
-use crate::shader::Shader;
+use shader::Shader;
 
+pub mod shader;
+
+#[derive(Clone)]
 pub struct Material {
-    shader: Shader,
+    pub shader: Shader,
 }
 
 impl Material {

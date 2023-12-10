@@ -3,15 +3,27 @@ use glium::glutin::surface::WindowSurface;
 use tracing::info;
 use winit::event::Event;
 use winit::event_loop::{ControlFlow};
+use hexgen_common::game_object::GameObject;
+use crate::camera::Camera;
+use crate::directional_light::DirectionalLight;
 
-pub struct Renderer {}
+pub struct Renderer {
+    camera: Camera,
+    directional_light: DirectionalLight,
+}
 
 impl Renderer {
-    pub fn init(){
-
+    pub fn new(camera: Camera, directional_light: DirectionalLight) -> Renderer {
+        Renderer {
+            camera,
+            directional_light,
+        }
+    }
+    pub fn init() {
+        // let model =
     }
 
-    pub fn render(display: &Display<WindowSurface>){
+    pub fn render(display: &Display<WindowSurface>) {
         let mut frame = display.draw();
         frame.clear_color_and_depth((1.0, 1.0, 1.0, 1.0), 1.0);
         frame.finish().unwrap();
@@ -31,5 +43,15 @@ impl Renderer {
             },
             _ => ()
         }
+    }
+}
+
+pub trait Render {
+    fn render(display: &Display<WindowSurface>);
+}
+
+impl Render for GameObject {
+    fn render(display: &Display<WindowSurface>) {
+        todo!()
     }
 }
