@@ -4,7 +4,7 @@ pub struct Perspective {
     fov: f32,
     z_far: f32,
     z_near: f32,
-    perspective_matrix: [[f32; 4]; 4],
+    perspective_matrix: Matrix,
     width: f32,
     height: f32,
 }
@@ -31,11 +31,11 @@ impl Perspective {
         let aspect_ratio = height / width;
         let f = 1.0 / (fov / 2.0).tan();
 
-        [
+        Matrix([
             [f * aspect_ratio, 0.0, 0.0, 0.0],
             [0.0, f, 0.0, 0.0],
             [0.0, 0.0, (z_far + z_near) / (z_far - z_near), 1.0],
             [0.0, 0.0, -(2.0 * z_far * z_near) / (z_far - z_near), 0.0],
-        ]
+        ])
     }
 }

@@ -1,7 +1,5 @@
 use tracing::info;
-use crate::material::Material;
 use normal::Normal;
-use crate::material::shader::Shader;
 use texture::Texture;
 use vertex::Vertex;
 
@@ -14,22 +12,22 @@ pub struct Mesh {
     normals: Vec<Normal>,
     indices: Vec<u32>,
     textures: Vec<Texture>,
-    material: Material,
+    // material: Material,
 }
 
 impl Mesh {
-    pub fn new(material: Material) -> Mesh {
+    pub fn new() -> Mesh {
         Mesh {
             vertices: vec![],
             normals: vec![],
             indices: vec![],
             textures: vec![],
-            material,
+            // material,
         }
     }
 
-    pub fn load_mesh(ai_mesh: russimp::mesh::Mesh, material: Material) -> Mesh {
-        let mut mesh = Mesh::new(material);
+    pub fn load_mesh(ai_mesh: russimp::mesh::Mesh) -> Mesh {
+        let mut mesh = Mesh::new();
 
         for i in 0..ai_mesh.vertices.len() {
             let position = (ai_mesh.vertices[i].x, ai_mesh.vertices[i].y, ai_mesh.vertices[i].z);

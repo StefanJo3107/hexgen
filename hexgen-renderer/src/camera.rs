@@ -9,7 +9,7 @@ pub struct Camera {
     position: Vector3,
     direction: Vector3,
     up: Vector3,
-    view_matrix: [[f32; 4]; 4],
+    view_matrix: Matrix,
     perspective: Perspective,
 }
 
@@ -50,12 +50,12 @@ impl Camera {
                              -position.x * u.x - position.y * u.y - position.z * u.z,
                              -position.x * f.x - position.y * f.y - position.z * f.z);
 
-        [
+        Matrix([
             [s_norm.x, u.x, f.x, 0.0],
             [s_norm.y, u.y, f.y, 0.0],
             [s_norm.z, u.z, f.z, 0.0],
             [p.x, p.y, p.z, 1.0],
-        ]
+        ])
     }
 }
 

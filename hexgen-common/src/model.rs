@@ -6,17 +6,21 @@ use crate::model::mesh::Mesh;
 pub mod mesh;
 
 pub struct Model {
+    name: String,
     meshes: Vec<Mesh>,
+    material: Material,
 }
 
 impl Model {
-    pub fn new() -> Model {
+    pub fn new(name: String, material: Material) -> Model {
         Model {
-            meshes: vec![]
+            name,
+            meshes: vec![],
+            material,
         }
     }
 
-    pub fn load_model(&mut self, file_path: &str, material: Material) {
+    pub fn load_model(&mut self, file_path: &str) {
         let scene = Scene::from_file(file_path,
                                      vec![PostProcess::CalculateTangentSpace,
                                           PostProcess::Triangulate,
@@ -25,8 +29,8 @@ impl Model {
 
         info!("Loaded scene from filepath {}", file_path);
         for mesh in scene.meshes {
-            self.meshes.push(Mesh::load_mesh(mesh, material.clone()));
+            self.meshes.push(Mesh::load_mesh(mesh));
         }
-        info!("Loaded model");
+        info!("Loaded model '{}'", self.name);
     }
 }

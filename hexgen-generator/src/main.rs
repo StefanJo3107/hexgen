@@ -1,6 +1,8 @@
 use hexgen_core::game_loop::GameLoop;
 use tracing::{info, Level};
 use tracing_subscriber::FmtSubscriber;
+use hexgen_generator::{Generator, init_scene};
+use hexgen_renderer::directional_light::DirectionalLight;
 use hexgen_renderer::renderer::Renderer;
 
 fn main() {
@@ -16,9 +18,7 @@ fn main() {
     let (window, display) = glium::backend::glutin::SimpleWindowBuilder::new().build(&event_loop);
 
     GameLoop::run(240, 0.1, event_loop, window, display,
-                  |_g, display|{
-
-                  },
+                  |_g, display| {},
                   |_g| {
                       return;
                   },
