@@ -1,10 +1,11 @@
+use tracing::info;
 use hexgen_common::matrix::Matrix;
 
 pub struct Perspective {
     fov: f32,
     z_far: f32,
     z_near: f32,
-    perspective_matrix: Matrix,
+    pub perspective_matrix: Matrix,
     width: f32,
     height: f32,
 }
@@ -25,6 +26,7 @@ impl Perspective {
         self.perspective_matrix = Perspective::calculate_matrix(self.fov, self.z_near, self.z_far, width, height);
         self.width = width;
         self.height = height;
+        info!("Updated perspective matrix");
     }
 
     fn calculate_matrix(fov: f32, z_near: f32, z_far: f32, width: f32, height: f32) -> Matrix {

@@ -1,4 +1,4 @@
-mod perspective;
+pub mod perspective;
 
 use hexgen_common::matrix::Matrix;
 use hexgen_common::transform::Translation;
@@ -9,8 +9,8 @@ pub struct Camera {
     position: Vector3,
     direction: Vector3,
     up: Vector3,
-    view_matrix: Matrix,
-    perspective: Perspective,
+    pub view_matrix: Matrix,
+    pub perspective: Perspective,
 }
 
 impl Camera {

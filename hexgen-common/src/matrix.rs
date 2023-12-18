@@ -1,5 +1,6 @@
 use std::ops;
 
+#[derive(Debug)]
 pub struct Matrix(pub [[f32; 4]; 4]);
 
 impl ops::Add<Matrix> for Matrix {

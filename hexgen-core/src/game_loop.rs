@@ -7,7 +7,8 @@ use winit::event::{Event, WindowEvent};
 use winit::event_loop::{ControlFlow, EventLoop};
 use winit::window::Window;
 
-pub struct GameLoop {
+pub struct GameLoop<G> {
+    pub game_state: G,
     pub updates_per_second: usize,
     pub max_frame_time: f64,
     pub window: Window,
@@ -24,9 +25,10 @@ pub struct GameLoop {
     current_instant: time::Instant,
 }
 
-impl GameLoop {
-    pub fn new(updates_per_second: usize, max_frame_time: f64, window: Window) -> GameLoop {
+impl<G: 'static> GameLoop<G> {
+    pub fn new(game_state: G, updates_per_second: usize, max_frame_time: f64, window: Window) -> GameLoop<G> {
         GameLoop {
+            game_state,
             updates_per_second,
             max_frame_time,
             window,
@@ -44,13 +46,13 @@ impl GameLoop {
         }
     }
 
-    pub fn run<I, U, R, H>(updates_per_second: usize, max_frame_time: f64, event_loop: EventLoop<()>, window: Window, display: Display<WindowSurface>, mut init: I, mut update: U, mut render: R, mut event_handler: H)
-        where I: FnMut(&mut GameLoop, &Display<WindowSurface>) + 'static,
-              U: FnMut(&mut GameLoop) + 'static,
-              R: FnMut(&mut GameLoop, &Display<WindowSurface>) + 'static,
-              H: FnMut(&mut GameLoop, &Event<()>, &Display<WindowSurface>, &mut ControlFlow) + 'static
+    pub fn run<I, U, R, H>(game_state: G, updates_per_second: usize, max_frame_time: f64, event_loop: EventLoop<()>, window: Window, display: Display<WindowSurface>, mut init: I, mut update: U, mut render: R, mut event_handler: H)
+        where I: FnMut(&mut GameLoop<G>, &Display<WindowSurface>) + 'static,
+              U: FnMut(&mut GameLoop<G>) + 'static,
+              R: FnMut(&mut GameLoop<G>, &Display<WindowSurface>) + 'static,
+              H: FnMut(&mut GameLoop<G>, &Event<()>, &Display<WindowSurface>, &mut ControlFlow) + 'static
     {
-        let mut game_loop = GameLoop::new(updates_per_second, max_frame_time, window);
+        let mut game_loop = GameLoop::new(game_state, updates_per_second, max_frame_time, window);
         init(&mut game_loop, &display);
         
         event_loop.run(move |event, _, control_flow| {
@@ -76,8 +78,8 @@ impl GameLoop {
     }
 
     pub fn next_frame<U, R>(&mut self, display: &Display<WindowSurface>, mut update: U, mut render: R) -> bool
-        where U: FnMut(&mut GameLoop),
-              R: FnMut(&mut GameLoop, &Display<WindowSurface>)
+        where U: FnMut(&mut GameLoop<G>),
+              R: FnMut(&mut GameLoop<G>, &Display<WindowSurface>)
     {
         if self.exit_next_iteration { return false; }
 

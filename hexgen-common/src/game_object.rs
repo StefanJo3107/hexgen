@@ -1,3 +1,6 @@
+use std::cell::{RefCell, RefMut};
+use std::rc::Rc;
+use tracing::info;
 use crate::matrix::Matrix;
 use crate::model::Model;
 use crate::transform::{Rotation, Scale, Translation};
@@ -5,15 +8,16 @@ use crate::vector3::Vector3;
 
 pub struct GameObject {
     name: String,
-    model: Model,
+    pub model: Rc<RefCell<Model>>,
     position: Vector3,
     rotation: Vector3,
     scale: Vector3,
-    model_matrix: Matrix,
+    pub model_matrix: Matrix,
 }
 
 impl GameObject {
-    pub fn new(name: String, model: Model) -> GameObject {
+    pub fn new(name: String, model: Rc<RefCell<Model>>) -> GameObject {
+        info!("Created Game Object '{}'", name);
         GameObject {
             name,
             model,
@@ -37,6 +41,7 @@ impl GameObject {
                 [0.0, 0.0, 0.0, 1.0]
             ]
         );
+
         let pitch_matrix = Matrix(
             [[rotation.y.cos(), 0.0, -rotation.y.sin(), 0.0],
                 [0.0, 1.0, 0.0, 0.0],
@@ -52,12 +57,14 @@ impl GameObject {
             ]
         );
         let translate_matrix = Matrix(
-            [[1.0, 0.0, 0.0, position.x],
-                [0.0, 1.0, 0.0, position.y],
-                [0.0, 0.0, 1.0, position.z],
-                [0.0, 0.0, 0.0, 1.0]]);
+            [[1.0, 0.0, 0.0, 0.0],
+                [0.0, 1.0, 0.0, 0.0],
+                [0.0, 0.0, 1.0, 0.0],
+                [position.x, position.y, position.z, 1.0]]);
 
-        translate_matrix * yaw_matrix * pitch_matrix * roll_matrix * scale_matrix
+
+        let matrix = translate_matrix * yaw_matrix * pitch_matrix * roll_matrix * scale_matrix;
+        matrix
     }
 
     pub fn update_matrix(&mut self) {
@@ -65,23 +72,24 @@ impl GameObject {
     }
 }
 
-impl Translation for GameObject {
+impl<'a> Translation for GameObject {
     fn translate(&mut self, translation: Vector3) {
-        self.position += translation;
+        self.position = Vector3::new(translation.x / self.scale.x, translation.y / self.scale.y, translation.z / self.scale.z);
         self.update_matrix();
     }
 }
 
-impl Rotation for GameObject {
+impl<'a> Rotation for GameObject {
     fn rotate(&mut self, rotation: Vector3) {
-        self.rotation += rotation;
+        self.rotation = rotation;
         self.update_matrix();
     }
 }
 
-impl Scale for GameObject {
+impl<'a> Scale for GameObject {
     fn scale(&mut self, scale: Vector3) {
-        self.scale += scale;
+        self.scale = scale;
+        self.position = Vector3::new(self.position.x / self.scale.x, self.position.y / self.scale.y, self.position.z / self.scale.z);
         self.update_matrix();
     }
 }

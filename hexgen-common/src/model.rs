@@ -7,8 +7,8 @@ pub mod mesh;
 
 pub struct Model {
     name: String,
-    meshes: Vec<Mesh>,
-    material: Material,
+    pub meshes: Vec<Mesh>,
+    pub material: Material,
 }
 
 impl Model {

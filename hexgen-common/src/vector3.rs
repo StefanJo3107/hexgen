@@ -1,9 +1,22 @@
 use std::ops;
 
+#[derive(Copy, Clone)]
 pub struct Vector3 {
     pub x: f32,
     pub y: f32,
     pub z: f32,
+}
+
+impl From<[f32; 3]> for Vector3 {
+    fn from(value: [f32; 3]) -> Self {
+        Vector3::new(value[0], value[1], value[2])
+    }
+}
+
+impl Into<[f32; 3]> for Vector3 {
+    fn into(self) -> [f32; 3] {
+        [self.x, self.y, self.z]
+    }
 }
 
 impl ops::Add<Vector3> for Vector3 {

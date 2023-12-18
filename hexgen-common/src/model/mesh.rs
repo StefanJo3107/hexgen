@@ -1,3 +1,5 @@
+use glium::{Display, IndexBuffer, VertexBuffer};
+use glium::glutin::surface::WindowSurface;
 use tracing::info;
 use normal::Normal;
 use texture::Texture;
@@ -8,10 +10,10 @@ pub mod normal;
 pub mod texture;
 
 pub struct Mesh {
-    vertices: Vec<Vertex>,
-    normals: Vec<Normal>,
-    indices: Vec<u32>,
-    textures: Vec<Texture>,
+    pub vertices: Vec<Vertex>,
+    pub normals: Vec<Normal>,
+    pub indices: Vec<u32>,
+    pub textures: Vec<Texture>,
     // material: Material,
 }
 
@@ -67,5 +69,17 @@ impl Mesh {
 
     pub fn add_texture(&mut self, texture: Texture) {
         self.textures.push(texture);
+    }
+
+    pub fn get_vertex_positions_buffer(&self, display: &Display<WindowSurface>) -> VertexBuffer<Vertex> {
+        VertexBuffer::new(display, &self.vertices).unwrap()
+    }
+
+    pub fn get_normals_buffer(&self, display: &Display<WindowSurface>) -> VertexBuffer<Normal> {
+        VertexBuffer::new(display, &self.normals).unwrap()
+    }
+
+    pub fn get_indices_buffer(&self, display: &Display<WindowSurface>) -> IndexBuffer<u32> {
+        IndexBuffer::new(display, glium::index::PrimitiveType::TrianglesList, &self.indices).unwrap()
     }
 }
