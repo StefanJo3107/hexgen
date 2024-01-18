@@ -30,7 +30,6 @@ pub fn redraw(display: &Display<WindowSurface>, window: &Window, egui_glium: &mu
 
 fn example_window(egui_ctx: &Context) {
     egui::Window::new("example window").show(egui_ctx, |ui| {
-        ui.visuals_mut().window_shadow.extrusion = 0.0;
         ui.label("Hello World!");
         if ui.button("Quit").clicked() {
             info!("Button clicked");
