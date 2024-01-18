@@ -6,6 +6,12 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-winit="0.28.7"
+winit= { version = "0.28.7", features = ["x11", "x11-dl"] }
 glium="0.33.0"
 tracing = "0.1"
+egui = { version = "0.23.0", default-features = false, features = [
+    "bytemuck",
+    "default_fonts"
+] }
+egui-winit = { version = "0.23.0", default-features = false }
+egui_glium = "0.23.0"

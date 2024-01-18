@@ -1,11 +1,13 @@
 use std::f32::consts::PI;
-use glium::{Display, Surface};
+use glium::{Display, Frame, Surface};
 use glium::glutin::surface::WindowSurface;
 use hexgen_core::game_loop::GameLoop;
 use tracing::{info, Level};
 use tracing_subscriber::FmtSubscriber;
+use winit::window::Window;
 use hexgen_common::vector3::Vector3;
 use hexgen_generator::Generator;
+use hexgen_generator::ui::redraw;
 use hexgen_renderer::camera::Camera;
 use hexgen_renderer::camera::perspective::Perspective;
 use hexgen_renderer::directional_light::DirectionalLight;
@@ -20,9 +22,8 @@ fn main() {
     info!("Initialized tracing logger");
     info!("Running generator");
 
-    let event_loop = winit::event_loop::EventLoopBuilder::new().build();
+    let event_loop = winit::event_loop::EventLoopBuilder::with_user_event().build();
     let (window, display) = glium::backend::glutin::SimpleWindowBuilder::new().build(&event_loop);
-
     let init_frame = display.draw();
     let perspective = Perspective::new(PI / 3.0, 1024.0, 0.1, init_frame.get_dimensions().0 as f32, init_frame.get_dimensions().1 as f32);
     let camera = Camera::new(Vector3::new(10.0, 0.0, 4.0), Vector3::new(-6.0, 2.5, 1.5), Vector3::up(), perspective);
@@ -39,7 +40,7 @@ fn main() {
     init_frame.finish().unwrap();
     let generator = Generator::new(renderer);
 
-    GameLoop::run(generator,240, 0.1, event_loop, window, display,
+    GameLoop::run(generator, 240, 0.1, event_loop, window, display,
                   |g, display| {
                       g.game_state.init_scene(display);
                       info!("Scene initialization finished");
@@ -47,8 +48,11 @@ fn main() {
                   |_g| {
                       return;
                   },
-                  |g, display| {
-                      g.game_state.renderer.render(&display, &mut g.game_state.game_objects);
+                  move |g, display, egui_glium| {
+                      let mut frame = display.draw();
+                      g.game_state.renderer.render(&display, &mut g.game_state.game_objects, &mut frame);
+                      redraw(display, &g.window, egui_glium, &mut frame);
+                      frame.finish().unwrap();
                   },
                   |g, e, display, control_flow| {
                       g.game_state.renderer.window_event_handler(e, display, control_flow);

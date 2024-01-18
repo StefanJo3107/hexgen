@@ -1,13 +1,13 @@
-use glium::{Display, IndexBuffer, VertexBuffer};
 use glium::glutin::surface::WindowSurface;
-use tracing::info;
+use glium::{Display, IndexBuffer, VertexBuffer};
 use normal::Normal;
 use texture::Texture;
+use tracing::info;
 use vertex::Vertex;
 
-pub mod vertex;
 pub mod normal;
 pub mod texture;
+pub mod vertex;
 
 pub struct Mesh {
     pub vertices: Vec<Vertex>,
@@ -32,14 +32,22 @@ impl Mesh {
         let mut mesh = Mesh::new();
 
         for i in 0..ai_mesh.vertices.len() {
-            let position = (ai_mesh.vertices[i].x, ai_mesh.vertices[i].y, ai_mesh.vertices[i].z);
+            let position = (
+                ai_mesh.vertices[i].x,
+                ai_mesh.vertices[i].y,
+                ai_mesh.vertices[i].z,
+            );
             let mut tex_coords = (0f32, 0f32);
             if let Some(coord) = ai_mesh.texture_coords[0].as_ref() {
                 tex_coords = (coord[i].x, coord[i].y);
             }
 
             let vertex = Vertex::new(position, tex_coords);
-            let normal = Normal::new((ai_mesh.normals[i].x, ai_mesh.normals[i].y, ai_mesh.normals[i].z));
+            let normal = Normal::new((
+                ai_mesh.normals[i].x,
+                ai_mesh.normals[i].y,
+                ai_mesh.normals[i].z,
+            ));
 
             mesh.add_vertex(vertex);
             mesh.add_normal(normal);
@@ -71,7 +79,10 @@ impl Mesh {
         self.textures.push(texture);
     }
 
-    pub fn get_vertex_positions_buffer(&self, display: &Display<WindowSurface>) -> VertexBuffer<Vertex> {
+    pub fn get_vertex_positions_buffer(
+        &self,
+        display: &Display<WindowSurface>,
+    ) -> VertexBuffer<Vertex> {
         VertexBuffer::new(display, &self.vertices).unwrap()
     }
 
@@ -80,6 +91,11 @@ impl Mesh {
     }
 
     pub fn get_indices_buffer(&self, display: &Display<WindowSurface>) -> IndexBuffer<u32> {
-        IndexBuffer::new(display, glium::index::PrimitiveType::TrianglesList, &self.indices).unwrap()
+        IndexBuffer::new(
+            display,
+            glium::index::PrimitiveType::TrianglesList,
+            &self.indices,
+        )
+        .unwrap()
     }
 }

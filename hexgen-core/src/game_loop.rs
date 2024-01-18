@@ -1,6 +1,7 @@
 use std::time;
 use std::thread;
 use std::time::Duration;
+use egui_glium::EguiGlium;
 use glium::Display;
 use glium::glutin::surface::WindowSurface;
 use winit::event::{Event, WindowEvent};
@@ -49,12 +50,14 @@ impl<G: 'static> GameLoop<G> {
     pub fn run<I, U, R, H>(game_state: G, updates_per_second: usize, max_frame_time: f64, event_loop: EventLoop<()>, window: Window, display: Display<WindowSurface>, mut init: I, mut update: U, mut render: R, mut event_handler: H)
         where I: FnMut(&mut GameLoop<G>, &Display<WindowSurface>) + 'static,
               U: FnMut(&mut GameLoop<G>) + 'static,
-              R: FnMut(&mut GameLoop<G>, &Display<WindowSurface>) + 'static,
+              R: FnMut(&mut GameLoop<G>, &Display<WindowSurface>, &mut EguiGlium) + 'static,
               H: FnMut(&mut GameLoop<G>, &Event<()>, &Display<WindowSurface>, &mut ControlFlow) + 'static
     {
         let mut game_loop = GameLoop::new(game_state, updates_per_second, max_frame_time, window);
         init(&mut game_loop, &display);
-        
+        let mut egui_glium = EguiGlium::new(&display, &game_loop.window, &event_loop);
+
+
         event_loop.run(move |event, _, control_flow| {
             *control_flow = ControlFlow::Poll;
 
@@ -62,7 +65,7 @@ impl<G: 'static> GameLoop<G> {
 
             match event {
                 Event::RedrawRequested(_) => {
-                    if !game_loop.next_frame(&display, &mut update, &mut render) {
+                    if !game_loop.next_frame(&display, &mut update, &mut render, &mut egui_glium) {
                         *control_flow = ControlFlow::Exit;
                     }
                 }
@@ -71,15 +74,22 @@ impl<G: 'static> GameLoop<G> {
                 }
                 Event::WindowEvent { event: WindowEvent::Occluded(occluded), .. } => {
                     game_loop.window_occluded = occluded;
+                },
+                Event::WindowEvent { event, ..} => {
+                    let event_response = egui_glium.on_event(&event);
+
+                    if event_response.repaint {
+                        game_loop.window.request_redraw();
+                    }
                 }
                 _ => {}
             }
         })
     }
 
-    pub fn next_frame<U, R>(&mut self, display: &Display<WindowSurface>, mut update: U, mut render: R) -> bool
+    pub fn next_frame<U, R>(&mut self, display: &Display<WindowSurface>, mut update: U, mut render: R, egui_glium: &mut EguiGlium) -> bool
         where U: FnMut(&mut GameLoop<G>),
-              R: FnMut(&mut GameLoop<G>, &Display<WindowSurface>)
+              R: FnMut(&mut GameLoop<G>, &Display<WindowSurface>, &mut EguiGlium)
     {
         if self.exit_next_iteration { return false; }
 
@@ -103,7 +113,7 @@ impl<G: 'static> GameLoop<G> {
         if self.window_occluded {
             thread::sleep(Duration::from_secs_f64(self.fixed_time_step));
         } else {
-            render(self, display);
+            render(self, display, egui_glium);
             self.number_of_renders += 1;
         }
 

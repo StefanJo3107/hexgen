@@ -1,3 +1,5 @@
+pub mod ui;
+
 use std::cell::RefCell;
 use std::rc::Rc;
 use glium::{Display, uniform};
@@ -11,6 +13,8 @@ use hexgen_common::model::Model;
 use hexgen_common::transform::{Rotation, Scale, Translation};
 use hexgen_common::vector3::Vector3;
 use hexgen_renderer::renderer::{Render, Renderer};
+use rand;
+use rand::Rng;
 
 pub struct Generator<'a> {
     pub game_objects: Vec<GameObject>,
@@ -52,34 +56,34 @@ impl<'a> Generator<'a> {
         grass_model.load_model("./res/models/dirt.obj");
         self.models.push(Rc::new(RefCell::new(grass_model)));
 
-        let fbm = Fbm::<Perlin>::new(0);
+        let mut rng = rand::thread_rng();
+        let fbm = Fbm::<Perlin>::new(rng.gen_range(0, 100));
         let noise = PlaneMapBuilder::<_, 2>::new(&fbm).set_size(40, 40)
             .set_x_bounds(-5.0, 5.0)
             .set_y_bounds(-5.0, 5.0)
             .build();
 
-        for z in 0..40 {
-            for x in 0..40 {
+        for z in 0..20 {
+            for x in 0..20 {
                 let noise_value = noise.get_value(x, z);
                 if noise_value < -0.2 {
                     let mut go = GameObject::new(String::from(format!("{} {},{}", "Water", x, z)), self.models[0].clone());
-                    go.rotate(Vector3::new(0.0, 0.0, 2.0));
                     go.translate(Vector3::new((x % 2) as f32 / 2.0 + z as f32, -noise_value as f32 / 15.0, x as f32 / 1.2));
+                    go.rotate(Vector3::new(0.0, 0.0, 2.0));
                     self.game_objects.push(go);
                 } else if noise_value < 0.0 {
                     let mut go = GameObject::new(String::from(format!("{} {},{}", "Dirt", x, z)), self.models[1].clone());
-                    go.rotate(Vector3::new(0.0, 0.0, 2.0));
                     go.translate(Vector3::new((x % 2) as f32 / 2.0 + z as f32, -noise_value as f32 / 15.0, x as f32 / 1.2));
+                    go.rotate(Vector3::new(0.0, 0.0, 2.0));
                     self.game_objects.push(go);
                 } else {
-                    let mut go = GameObject::new(String::from(format!("{} {},{}", "Dirt", x, z)), self.models[2].clone());
-                    go.rotate(Vector3::new(0.0, 0.0, 2.0));
+                    let mut go = GameObject::new(String::from(format!("{} {},{}", "Grass", x, z)), self.models[2].clone());
                     go.translate(Vector3::new((x % 2) as f32 / 2.0 + z as f32, -noise_value as f32 / 15.0, x as f32 / 1.2));
+                    go.rotate(Vector3::new(0.0, 0.0, 2.0));
                     self.game_objects.push(go);
                 }
             }
         }
-        // self.game_objects[0].scale(Vector3::new(1.0, 1.0, 1.0));
     }
 }
 
