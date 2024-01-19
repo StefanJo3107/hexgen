@@ -17,7 +17,7 @@ pub struct GameObject {
 
 impl GameObject {
     pub fn new(name: String, model: Rc<RefCell<Model>>) -> GameObject {
-        info!("Created Game Object '{}'", name);
+        // info!("Created Game Object '{}'", name);
         GameObject {
             name,
             model,

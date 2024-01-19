@@ -1,9 +1,14 @@
 use glium::glutin::surface::WindowSurface;
 use glium::{Display, IndexBuffer, VertexBuffer};
+use russimp::Color4D;
+use russimp::material::PropertyTypeInfo;
 use normal::Normal;
 use texture::Texture;
 use tracing::info;
 use vertex::Vertex;
+use crate::material::Material;
+use crate::material::shader::Shader;
+use crate::vector3::Vector3;
 
 pub mod normal;
 pub mod texture;
@@ -14,7 +19,7 @@ pub struct Mesh {
     pub normals: Vec<Normal>,
     pub indices: Vec<u32>,
     pub textures: Vec<Texture>,
-    // material: Material,
+    pub material: Option<Material>,
 }
 
 impl Mesh {
@@ -24,11 +29,11 @@ impl Mesh {
             normals: vec![],
             indices: vec![],
             textures: vec![],
-            // material,
+            material: None,
         }
     }
 
-    pub fn load_mesh(ai_mesh: russimp::mesh::Mesh) -> Mesh {
+    pub fn load_mesh(ai_mesh: russimp::mesh::Mesh, materials: &Vec<russimp::material::Material>) -> Mesh {
         let mut mesh = Mesh::new();
 
         for i in 0..ai_mesh.vertices.len() {
@@ -59,6 +64,54 @@ impl Mesh {
             }
         }
 
+        let mat = materials.get(ai_mesh.material_index as usize);
+
+        if let Some(mat) = mat {
+            let mut mat_name: String = String::from("");
+            let mut mat_diffuse: Vector3 = Vector3::zero();
+            let mut mat_specular: Vector3 = Vector3::zero();
+            let mut mat_ambient: Vector3 = Vector3::zero();
+
+            for prop in &mat.properties {
+                if prop.key == "?mat.name" {
+                    if let PropertyTypeInfo::String(name) = &prop.data{
+                        mat_name = name.clone();
+                    }
+                } else if prop.key == "$clr.diffuse" {
+                    if let PropertyTypeInfo::FloatArray(arr) = &prop.data{
+                        mat_diffuse = Vector3::new(arr[0], arr[1], arr[2]);
+                    }
+                } else if prop.key == "$clr.ambient" {
+                    if let PropertyTypeInfo::FloatArray(arr) = &prop.data {
+                        mat_ambient = Vector3::new(arr[0], arr[1], arr[2]);
+                    }
+                } else if prop.key == "$clr.specular" {
+                    if let PropertyTypeInfo::FloatArray(arr) = &prop.data {
+                        mat_specular = Vector3::new(arr[0], arr[1], arr[2]);
+                    }
+                }
+            }
+
+            let shader = Shader::new("./res/shaders/diffuse.vert", "./res/shaders/diffuse.frag");
+            mesh.material = Some(Material::new(mat_name, shader, mat_ambient, mat_diffuse, mat_specular));
+        }
+
+        let mat = materials.get(ai_mesh.material_index as usize);
+        if let Some(mat) = mat {
+            for texture in &mat.textures {
+                let tex = texture.1.borrow_mut();
+            }
+            info!("Material 2 available");
+            info!("{}", mat.textures.len());
+        }
+
+        for colors in ai_mesh.colors {
+            if let Some(colors) = colors {
+                for color in colors {
+                    info!("Colors: {} {} {}",color.r, color.g, color.b);
+                }
+            }
+        }
         info!("Loaded mesh");
         return mesh;
     }
@@ -96,6 +149,6 @@ impl Mesh {
             glium::index::PrimitiveType::TrianglesList,
             &self.indices,
         )
-        .unwrap()
+            .unwrap()
     }
 }
