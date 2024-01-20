@@ -6,9 +6,9 @@ use hexgen_common::vector3::Vector3;
 use crate::camera::perspective::Perspective;
 
 pub struct Camera {
-    position: Vector3,
-    direction: Vector3,
-    up: Vector3,
+    pub position: Vector3,
+    pub direction: Vector3,
+    pub up: Vector3,
     pub view_matrix: Matrix,
     pub perspective: Perspective,
 }
@@ -24,7 +24,7 @@ impl Camera {
         }
     }
 
-    fn calculate_view_matrix(position: &Vector3, direction: &Vector3, up: &Vector3) -> Matrix {
+    pub fn calculate_view_matrix(position: &Vector3, direction: &Vector3, up: &Vector3) -> Matrix {
         let f = {
             let f = direction;
             let len = f.x * f.x + f.y * f.y + f.z * f.z;
@@ -57,11 +57,15 @@ impl Camera {
             [p.x, p.y, p.z, 1.0],
         ])
     }
+
+    pub fn recalculate(&mut self){
+        self.view_matrix = Camera::calculate_view_matrix(&self.position, &self.direction, &self.up);
+    }
 }
 
 impl Translation for Camera {
     fn translate(&mut self, translation: Vector3) {
-        self.position += translation;
+        self.position = translation;
         self.view_matrix = Camera::calculate_view_matrix(&self.position, &self.direction, &self.up);
     }
 }

@@ -6,6 +6,7 @@ use tracing::{info, Level};
 use tracing_subscriber::FmtSubscriber;
 use winit::monitor::{MonitorHandle, VideoMode};
 use winit::window::{Fullscreen, Window};
+use hexgen_common::transform::Translation;
 use hexgen_common::vector3::Vector3;
 use hexgen_generator::Generator;
 use hexgen_generator::ui::{UI};
@@ -29,8 +30,8 @@ fn main() {
     window.set_maximized(true);
     window.set_title("Hexgen simulation");
     let perspective = Perspective::new(PI / 3.0, 1024.0, 0.1, init_frame.get_dimensions().0 as f32, init_frame.get_dimensions().1 as f32);
-    let camera = Camera::new(Vector3::new(10.0, 0.0, 4.0), Vector3::new(-6.0, 2.5, 1.5), Vector3::up(), perspective);
-    let directional_light = DirectionalLight::new(Vector3::new(0.6, 0.1, -0.7));
+    let camera = Camera::new(Vector3::new(11.0, 7.0, 1.0), Vector3::new(-3.0, -3.0, 0.0), Vector3::up(), perspective);
+    let directional_light = DirectionalLight::new(Vector3::new(-0.2, 0.4, -0.7));
     let params = glium::DrawParameters {
         depth: glium::Depth {
             test: glium::draw_parameters::DepthTest::IfLess,
@@ -39,7 +40,7 @@ fn main() {
         },
         ..Default::default()
     };
-    let renderer = Renderer::new(camera, directional_light, params);
+    let renderer = Renderer::new(camera, directional_light, params, Vector3::new(0.02, 0.02, 0.02));
     init_frame.finish().unwrap();
     let generator = Generator::new(renderer);
     let mut ui = UI::new();
@@ -55,7 +56,7 @@ fn main() {
                   move |g, display, egui_glium| {
                       let mut frame = display.draw();
                       g.game_state.renderer.render(&display, &mut g.game_state.game_objects, &mut frame);
-                      ui.redraw(display, &g.window, egui_glium, &mut frame);
+                      ui.redraw(&mut g.game_state, g.frame_rate, display, &g.window, egui_glium, &mut frame);
                       frame.finish().unwrap();
                   },
                   |g, e, display, control_flow| {

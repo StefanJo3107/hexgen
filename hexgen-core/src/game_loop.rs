@@ -4,6 +4,7 @@ use std::time::Duration;
 use egui_glium::EguiGlium;
 use glium::Display;
 use glium::glutin::surface::WindowSurface;
+use tracing::info;
 use winit::event::{Event, WindowEvent};
 use winit::event_loop::{ControlFlow, EventLoop};
 use winit::window::Window;
@@ -24,6 +25,7 @@ pub struct GameLoop<G> {
     blending_factor: f64,
     previous_instant: time::Instant,
     current_instant: time::Instant,
+    pub frame_rate: f64,
 }
 
 impl<G: 'static> GameLoop<G> {
@@ -44,6 +46,7 @@ impl<G: 'static> GameLoop<G> {
             blending_factor: 0.0,
             previous_instant: time::Instant::now(),
             current_instant: time::Instant::now(),
+            frame_rate: 0.0
         }
     }
 
@@ -74,8 +77,8 @@ impl<G: 'static> GameLoop<G> {
                 }
                 Event::WindowEvent { event: WindowEvent::Occluded(occluded), .. } => {
                     game_loop.window_occluded = occluded;
-                },
-                Event::WindowEvent { event, ..} => {
+                }
+                Event::WindowEvent { event, .. } => {
                     let event_response = egui_glium.on_event(&event);
 
                     if event_response.repaint {
@@ -116,7 +119,10 @@ impl<G: 'static> GameLoop<G> {
             render(self, display, egui_glium);
             self.number_of_renders += 1;
         }
-
+        let frame_duration = (time::Instant::now() - self.current_instant).as_secs_f64();
+        if frame_duration != 0.0 {
+            self.frame_rate = 1.0 / frame_duration;
+        }
         self.previous_instant = self.current_instant;
 
         true
