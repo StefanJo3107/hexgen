@@ -41,15 +41,11 @@ impl<'a> Renderer<'a> {
         frame.clear_color_and_depth((self.background_color.x, self.background_color.y, self.background_color.z, 1.0), 1.0);
         let light_dir: [f32; 3] = self.directional_light.direction.into();
         for mut go in game_objects.iter_mut() {
-            let model_rc = go.model.clone();
-            let model = model_rc.borrow();
-
             go.render(
                 go.model_matrix.0.clone(),
                 self.camera.perspective.perspective_matrix.0.clone(),
                 self.camera.view_matrix.0.clone(),
                 light_dir,
-                &display,
                 &mut frame,
                 &self.draw_parameters,
             );
@@ -89,7 +85,6 @@ pub trait Render {
         perspective_matrix: [[f32; 4]; 4],
         view_matrix: [[f32; 4]; 4],
         light_dir: [f32; 3],
-        display: &Display<WindowSurface>,
         frame: &mut Frame,
         draw_parameters: &DrawParameters,
     );
@@ -102,7 +97,6 @@ impl<'a> Render for GameObject {
         perspective_matrix: [[f32; 4]; 4],
         view_matrix: [[f32; 4]; 4],
         light_dir: [f32; 3],
-        display: &Display<WindowSurface>,
         frame: &mut Frame,
         draw_parameters: &DrawParameters,
     )

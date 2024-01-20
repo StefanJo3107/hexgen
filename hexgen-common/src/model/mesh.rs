@@ -102,22 +102,6 @@ impl Mesh {
             mesh.material = Some(Material::new(mat_name, shader, mat_ambient, mat_diffuse, mat_specular));
         }
 
-        let mat = materials.get(ai_mesh.material_index as usize);
-        if let Some(mat) = mat {
-            for texture in &mat.textures {
-                let tex = texture.1.borrow_mut();
-            }
-            info!("Material 2 available");
-            info!("{}", mat.textures.len());
-        }
-
-        for colors in ai_mesh.colors {
-            if let Some(colors) = colors {
-                for color in colors {
-                    info!("Colors: {} {} {}",color.r, color.g, color.b);
-                }
-            }
-        }
         info!("Loaded mesh");
         return mesh;
     }

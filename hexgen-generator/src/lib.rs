@@ -68,13 +68,14 @@ impl<'a> Generator<'a> {
         stone_mountain_model.load_model("./res/models/stone_mountain.obj", display);
         self.models.push(Rc::new(RefCell::new(stone_mountain_model)));
 
-        self.generate_terrain_without_seed(5, 5);
+        self.generate_terrain_without_seed(5, 5 add .
+        );
     }
 
     pub fn generate_terrain_with_seed(&mut self, width: u8, height: u8, seed: u64){
         let mut rng = rand::rngs::StdRng::seed_from_u64(seed);
         let fbm = Fbm::<Perlin>::new(rng.gen_range(0, 100));
-        let noise = PlaneMapBuilder::<_, 2>::new(&fbm).set_size(40, 40)
+        let noise = PlaneMapBuilder::<_, 2>::new(&fbm).set_size(width as usize, height as usize)
             .set_x_bounds(-5.0, 5.0)
             .set_y_bounds(-5.0, 5.0)
             .build();
@@ -84,7 +85,7 @@ impl<'a> Generator<'a> {
     pub fn generate_terrain_without_seed(&mut self, width: u8, height: u8){
         let mut rng = rand::rngs::StdRng::from_entropy();
         let fbm = Fbm::<Perlin>::new(rng.gen_range(0, 100));
-        let noise = PlaneMapBuilder::<_, 2>::new(&fbm).set_size(40, 40)
+        let noise = PlaneMapBuilder::<_, 2>::new(&fbm).set_size(width as usize, height as usize)
             .set_x_bounds(-5.0, 5.0)
             .set_y_bounds(-5.0, 5.0)
             .build();

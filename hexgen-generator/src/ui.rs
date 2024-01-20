@@ -50,27 +50,27 @@ impl UI {
 
     fn initialize_shortcuts(&mut self, egui_ctx: &Context, generator: &mut Generator){
         if egui_ctx.input(|i| i.key_pressed(Key::D)) {
-            generator.renderer.camera.position.z += 1.0;
+            generator.renderer.camera.position.z += 0.5;
             generator.renderer.camera.recalculate();
         }
         if egui_ctx.input(|i| i.key_pressed(Key::A)) {
-            generator.renderer.camera.position.z -= 1.0;
+            generator.renderer.camera.position.z -= 0.5;
             generator.renderer.camera.recalculate();
         }
         if egui_ctx.input(|i| i.key_pressed(Key::S)) {
-            generator.renderer.camera.position.x += 1.0;
+            generator.renderer.camera.position.x += 0.5;
             generator.renderer.camera.recalculate();
         }
         if egui_ctx.input(|i| i.key_pressed(Key::W)) {
-            generator.renderer.camera.position.x -= 1.0;
+            generator.renderer.camera.position.x -= 0.5;
             generator.renderer.camera.recalculate();
         }
         if egui_ctx.input(|i| i.key_pressed(Key::E)) {
-            generator.renderer.camera.position.y += 1.0;
+            generator.renderer.camera.position.y += 0.5;
             generator.renderer.camera.recalculate();
         }
         if egui_ctx.input(|i| i.key_pressed(Key::Q)) {
-            generator.renderer.camera.position.y -= 1.0;
+            generator.renderer.camera.position.y -= 0.5;
             generator.renderer.camera.recalculate();
         }
         if let scroll_delta= egui_ctx.input(|i| i.scroll_delta) {
@@ -97,10 +97,10 @@ impl UI {
                     ui.add_space(10.0);
 
                     ui.label("Select width:");
-                    ui.add(egui::Slider::new(&mut self.width, 3..=20));
+                    ui.add(egui::Slider::new(&mut self.width, 3..=50));
 
                     ui.label("Select height:");
-                    ui.add(egui::Slider::new(&mut self.height, 3..=20));
+                    ui.add(egui::Slider::new(&mut self.height, 3..=50));
 
                     ui.add_space(7.0);
                     ui.checkbox(&mut self.define_seed, "Define seed");
