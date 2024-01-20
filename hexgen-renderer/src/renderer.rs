@@ -127,13 +127,16 @@ impl<'a> Render for GameObject {
                 diffuse_color: diffuse_color,
                 specular_color: specular_color,
             };
+                    let vertex_buffer = mesh.vertex_buffer.as_ref().unwrap();
+                    let normals_buffer = mesh.normals_buffer.as_ref().unwrap();
+                    let index_buffer = mesh.index_buffer.as_ref().unwrap();
                     frame
                         .draw(
                             (
-                                &mesh.get_vertex_positions_buffer(display),
-                                &mesh.get_normals_buffer(display),
+                                vertex_buffer,
+                                normals_buffer,
                             ),
-                            &mesh.get_indices_buffer(display),
+                            index_buffer,
                             program,
                             &uniforms,
                             draw_parameters,
