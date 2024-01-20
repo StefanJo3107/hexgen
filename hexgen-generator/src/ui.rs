@@ -8,6 +8,8 @@ use crate::Generator;
 pub struct UI {
     width: u8,
     height: u8,
+    ss_height: u8,
+    ss_width: u8,
     seed: u64,
     define_seed: bool
 }
@@ -18,7 +20,9 @@ impl UI {
             width: 5,
             height: 5,
             seed: 0,
-            define_seed: false
+            define_seed: false,
+            ss_width: 5,
+            ss_height: 5
         }
     }
 
@@ -120,6 +124,8 @@ impl UI {
                             } else{
                                 generator.generate_terrain_without_seed(self.width, self.height);
                             }
+                            self.ss_height = self.height;
+                            self.ss_width = self.width;
                         }
                     });
                     ui.add_space(10.0);
@@ -167,11 +173,11 @@ impl UI {
             });
             ui.horizontal(|ui| {
                 ui.label("Width:");
-                ui.label(self.width.to_string());
+                ui.label(self.ss_width.to_string());
             });
             ui.horizontal(|ui| {
                 ui.label("Height:");
-                ui.label(self.height.to_string());
+                ui.label(self.ss_height.to_string());
             });
         });
     }
