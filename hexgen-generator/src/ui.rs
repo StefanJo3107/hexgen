@@ -49,27 +49,27 @@ impl UI {
     }
 
     fn initialize_shortcuts(&mut self, egui_ctx: &Context, generator: &mut Generator){
-        if egui_ctx.input(|i| i.key_pressed(Key::A)) {
+        if egui_ctx.input(|i| i.key_pressed(Key::D)) {
             generator.renderer.camera.position.z += 1.0;
             generator.renderer.camera.recalculate();
         }
-        if egui_ctx.input(|i| i.key_pressed(Key::D)) {
+        if egui_ctx.input(|i| i.key_pressed(Key::A)) {
             generator.renderer.camera.position.z -= 1.0;
             generator.renderer.camera.recalculate();
         }
-        if egui_ctx.input(|i| i.key_pressed(Key::W)) {
+        if egui_ctx.input(|i| i.key_pressed(Key::S)) {
             generator.renderer.camera.position.x += 1.0;
             generator.renderer.camera.recalculate();
         }
-        if egui_ctx.input(|i| i.key_pressed(Key::S)) {
+        if egui_ctx.input(|i| i.key_pressed(Key::W)) {
             generator.renderer.camera.position.x -= 1.0;
             generator.renderer.camera.recalculate();
         }
-        if egui_ctx.input(|i| i.key_pressed(Key::Q)) {
+        if egui_ctx.input(|i| i.key_pressed(Key::E)) {
             generator.renderer.camera.position.y += 1.0;
             generator.renderer.camera.recalculate();
         }
-        if egui_ctx.input(|i| i.key_pressed(Key::E)) {
+        if egui_ctx.input(|i| i.key_pressed(Key::Q)) {
             generator.renderer.camera.position.y -= 1.0;
             generator.renderer.camera.recalculate();
         }

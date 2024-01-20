@@ -20,6 +20,9 @@ pub struct Mesh {
     pub indices: Vec<u32>,
     pub textures: Vec<Texture>,
     pub material: Option<Material>,
+    pub vertex_buffer: Option<VertexBuffer<Vertex>>,
+    pub index_buffer: Option<IndexBuffer<u32>>,
+    pub normals_buffer: Option<VertexBuffer<Normal>>,
 }
 
 impl Mesh {
@@ -30,6 +33,9 @@ impl Mesh {
             indices: vec![],
             textures: vec![],
             material: None,
+            vertex_buffer: None,
+            index_buffer: None,
+            normals_buffer: None,
         }
     }
 
@@ -74,11 +80,11 @@ impl Mesh {
 
             for prop in &mat.properties {
                 if prop.key == "?mat.name" {
-                    if let PropertyTypeInfo::String(name) = &prop.data{
+                    if let PropertyTypeInfo::String(name) = &prop.data {
                         mat_name = name.clone();
                     }
                 } else if prop.key == "$clr.diffuse" {
-                    if let PropertyTypeInfo::FloatArray(arr) = &prop.data{
+                    if let PropertyTypeInfo::FloatArray(arr) = &prop.data {
                         mat_diffuse = Vector3::new(arr[0], arr[1], arr[2]);
                     }
                 } else if prop.key == "$clr.ambient" {
@@ -132,23 +138,23 @@ impl Mesh {
         self.textures.push(texture);
     }
 
-    pub fn get_vertex_positions_buffer(
-        &self,
+    pub fn set_vertex_positions_buffer(
+        &mut self,
         display: &Display<WindowSurface>,
-    ) -> VertexBuffer<Vertex> {
-        VertexBuffer::new(display, &self.vertices).unwrap()
+    ) {
+        self.vertex_buffer = Some(VertexBuffer::new(display, &self.vertices).unwrap());
     }
 
-    pub fn get_normals_buffer(&self, display: &Display<WindowSurface>) -> VertexBuffer<Normal> {
-        VertexBuffer::new(display, &self.normals).unwrap()
+    pub fn set_normals_buffer(&mut self, display: &Display<WindowSurface>) {
+        self.normals_buffer = Some(VertexBuffer::new(display, &self.normals).unwrap());
     }
 
-    pub fn get_indices_buffer(&self, display: &Display<WindowSurface>) -> IndexBuffer<u32> {
-        IndexBuffer::new(
+    pub fn set_indices_buffer(&mut self, display: &Display<WindowSurface>) {
+        self.index_buffer = Some(IndexBuffer::new(
             display,
             glium::index::PrimitiveType::TrianglesList,
             &self.indices,
         )
-            .unwrap()
+            .unwrap());
     }
 }

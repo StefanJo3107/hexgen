@@ -30,6 +30,9 @@ impl Model {
         info!("Loaded scene from filepath {}", file_path);
         for mesh in scene.meshes {
             self.meshes.push(Mesh::load_mesh(mesh, scene.materials.as_ref()));
+            self.meshes.last_mut().unwrap().set_normals_buffer(display);
+            self.meshes.last_mut().unwrap().set_indices_buffer(display);
+            self.meshes.last_mut().unwrap().set_vertex_positions_buffer(display);
         }
         info!("Loaded model '{}'", self.name);
         self.load_materials(display);

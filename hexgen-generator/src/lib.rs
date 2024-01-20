@@ -97,7 +97,6 @@ impl<'a> Generator<'a> {
         for z in 0..height {
             for x in 0..width {
                 let noise_value = noise.get_value(x as usize, z as usize);
-                // info!("Noise value: {}", noise_value);
                 if noise_value < -0.3 {
                     let val = rng.gen_range(0.0, 1.0);
                     let mut go = GameObject::new(String::from(format!("{} {},{}", "Water", x, z)), self.models[if val < 0.75 {0} else {1}].clone());
