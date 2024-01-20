@@ -68,8 +68,7 @@ impl<'a> Generator<'a> {
         stone_mountain_model.load_model("./res/models/stone_mountain.obj", display);
         self.models.push(Rc::new(RefCell::new(stone_mountain_model)));
 
-        self.generate_terrain_without_seed(5, 5 add .
-        );
+        self.generate_terrain_without_seed(5, 5);
     }
 
     pub fn generate_terrain_with_seed(&mut self, width: u8, height: u8, seed: u64){
