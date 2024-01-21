@@ -4,7 +4,6 @@ use std::time::Duration;
 use egui_glium::EguiGlium;
 use glium::Display;
 use glium::glutin::surface::WindowSurface;
-use tracing::info;
 use winit::event::{Event, WindowEvent};
 use winit::event_loop::{ControlFlow, EventLoop};
 use winit::window::Window;

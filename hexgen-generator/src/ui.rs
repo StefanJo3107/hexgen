@@ -1,7 +1,6 @@
-use egui::{Context, Key, ScrollArea, Visuals};
+use egui::{Context, Key, Visuals};
 use glium::{Display, Frame};
 use glium::glutin::surface::WindowSurface;
-use tracing::info;
 use winit::window::Window;
 use crate::Generator;
 
@@ -11,7 +10,7 @@ pub struct UI {
     ss_height: u8,
     ss_width: u8,
     seed: u64,
-    define_seed: bool
+    define_seed: bool,
 }
 
 impl UI {
@@ -22,7 +21,7 @@ impl UI {
             seed: 0,
             define_seed: false,
             ss_width: 5,
-            ss_height: 5
+            ss_height: 5,
         }
     }
 
@@ -52,7 +51,7 @@ impl UI {
         }
     }
 
-    fn initialize_shortcuts(&mut self, egui_ctx: &Context, generator: &mut Generator){
+    fn initialize_shortcuts(&mut self, egui_ctx: &Context, generator: &mut Generator) {
         if egui_ctx.input(|i| i.key_pressed(Key::D)) {
             generator.renderer.camera.position.z += 0.5;
             generator.renderer.camera.recalculate();
@@ -77,17 +76,15 @@ impl UI {
             generator.renderer.camera.position.y -= 0.5;
             generator.renderer.camera.recalculate();
         }
-        if let scroll_delta= egui_ctx.input(|i| i.scroll_delta) {
-            let sensitivity = 0.01;
-            if egui_ctx.input(|i| i.key_pressed(Key::Z)) {
-                generator.renderer.camera.direction.z += scroll_delta.y * sensitivity;
-                generator.renderer.camera.recalculate();
-            }
-            if egui_ctx.input(|i| i.key_pressed(Key::X)) {
-                generator.renderer.camera.direction.x += scroll_delta.y * sensitivity;
-                generator.renderer.camera.recalculate();
-            }
-
+        let scroll_delta = egui_ctx.input(|i| i.scroll_delta);
+        let sensitivity = 0.01;
+        if egui_ctx.input(|i| i.key_pressed(Key::Z)) {
+            generator.renderer.camera.direction.z += scroll_delta.y * sensitivity;
+            generator.renderer.camera.recalculate();
+        }
+        if egui_ctx.input(|i| i.key_pressed(Key::X)) {
+            generator.renderer.camera.direction.x += scroll_delta.y * sensitivity;
+            generator.renderer.camera.recalculate();
         }
     }
 
@@ -117,11 +114,11 @@ impl UI {
                     ui.add_space(10.0);
 
 
-                    ui.centered_and_justified(|ui|{
+                    ui.centered_and_justified(|ui| {
                         if ui.button("Generate").clicked() {
                             if self.define_seed {
                                 generator.generate_terrain_with_seed(self.width, self.height, self.seed);
-                            } else{
+                            } else {
                                 generator.generate_terrain_without_seed(self.width, self.height);
                             }
                             self.ss_height = self.height;
@@ -137,8 +134,8 @@ impl UI {
     fn scene_settings(&mut self, generator: &mut Generator, frame_rate: f64, egui_ctx: &Context) {
         egui::Window::new("Scene").show(egui_ctx, |ui| {
             ui.label("Camera position:");
-            ui.horizontal(|ui|{
-                let response_x =  ui.add(egui::DragValue::new(&mut generator.renderer.camera.position.x));
+            ui.horizontal(|ui| {
+                let response_x = ui.add(egui::DragValue::new(&mut generator.renderer.camera.position.x));
                 let response_y = ui.add(egui::DragValue::new(&mut generator.renderer.camera.position.y));
                 let response_z = ui.add(egui::DragValue::new(&mut generator.renderer.camera.position.z));
 
@@ -148,7 +145,7 @@ impl UI {
             });
 
             ui.label("Camera direction:");
-            ui.horizontal(|ui|{
+            ui.horizontal(|ui| {
                 let response_x = ui.add(egui::DragValue::new(&mut generator.renderer.camera.direction.x));
                 let response_y = ui.add(egui::DragValue::new(&mut generator.renderer.camera.direction.y));
                 let response_z = ui.add(egui::DragValue::new(&mut generator.renderer.camera.direction.z));
@@ -159,7 +156,7 @@ impl UI {
             });
 
             ui.label("Light direction:");
-            ui.horizontal(|ui|{
+            ui.horizontal(|ui| {
                 ui.add(egui::DragValue::new(&mut generator.renderer.directional_light.direction.x));
                 ui.add(egui::DragValue::new(&mut generator.renderer.directional_light.direction.y));
                 ui.add(egui::DragValue::new(&mut generator.renderer.directional_light.direction.z));

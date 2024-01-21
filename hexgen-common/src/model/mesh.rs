@@ -1,6 +1,5 @@
 use glium::glutin::surface::WindowSurface;
 use glium::{Display, IndexBuffer, VertexBuffer};
-use russimp::Color4D;
 use russimp::material::PropertyTypeInfo;
 use normal::Normal;
 use texture::Texture;

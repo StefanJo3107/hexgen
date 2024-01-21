@@ -1,13 +1,11 @@
 use crate::camera::Camera;
 use crate::directional_light::DirectionalLight;
 use glium::glutin::surface::WindowSurface;
-use glium::uniforms::{AsUniformValue, Uniforms, UniformsStorage};
 use glium::{uniform, Display, DrawParameters, Frame, Surface};
 use hexgen_common::game_object::GameObject;
 use tracing::{error, info};
 use winit::event::Event;
 use winit::event_loop::ControlFlow;
-use hexgen_common::matrix::Matrix;
 use hexgen_common::vector3::Vector3;
 
 pub struct Renderer<'a> {
@@ -34,13 +32,12 @@ impl<'a> Renderer<'a> {
 
     pub fn render(
         &mut self,
-        display: &Display<WindowSurface>,
-        mut game_objects: &mut Vec<GameObject>,
+        game_objects: &mut Vec<GameObject>,
         mut frame: &mut Frame,
     ) {
         frame.clear_color_and_depth((self.background_color.x, self.background_color.y, self.background_color.z, 1.0), 1.0);
         let light_dir: [f32; 3] = self.directional_light.direction.into();
-        for mut go in game_objects.iter_mut() {
+        for go in game_objects.iter_mut() {
             go.render(
                 go.model_matrix.0.clone(),
                 self.camera.perspective.perspective_matrix.0.clone(),

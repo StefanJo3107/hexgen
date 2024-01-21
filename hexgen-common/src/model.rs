@@ -2,7 +2,6 @@ use glium::Display;
 use glium::glutin::surface::WindowSurface;
 use russimp::scene::{PostProcess, Scene};
 use tracing::info;
-use crate::material::Material;
 use crate::model::mesh::Mesh;
 
 pub mod mesh;

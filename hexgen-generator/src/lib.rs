@@ -2,20 +2,17 @@ pub mod ui;
 
 use std::cell::RefCell;
 use std::rc::Rc;
-use glium::{Display, uniform};
+use glium::Display;
 use glium::glutin::surface::WindowSurface;
-use noise::{Fbm, NoiseFn, Perlin};
+use noise::{Fbm, Perlin};
 use noise::utils::{NoiseMapBuilder, PlaneMapBuilder};
 use hexgen_common::game_object::GameObject;
-use hexgen_common::material::Material;
-use hexgen_common::material::shader::Shader;
 use hexgen_common::model::Model;
-use hexgen_common::transform::{Rotation, Scale, Translation};
+use hexgen_common::transform::Translation;
 use hexgen_common::vector3::Vector3;
-use hexgen_renderer::renderer::{Render, Renderer};
+use hexgen_renderer::renderer::Renderer;
 use rand;
 use rand::{Rng, SeedableRng};
-use tracing::info;
 
 pub struct Generator<'a> {
     pub game_objects: Vec<GameObject>,

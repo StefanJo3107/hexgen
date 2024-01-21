@@ -1,12 +1,8 @@
 use std::f32::consts::PI;
-use glium::{Display, Frame, Surface};
-use glium::glutin::surface::WindowSurface;
+use glium::Surface;
 use hexgen_core::game_loop::GameLoop;
 use tracing::{info, Level};
 use tracing_subscriber::FmtSubscriber;
-use winit::monitor::{MonitorHandle, VideoMode};
-use winit::window::{Fullscreen, Window};
-use hexgen_common::transform::Translation;
 use hexgen_common::vector3::Vector3;
 use hexgen_generator::Generator;
 use hexgen_generator::ui::{UI};
@@ -55,7 +51,7 @@ fn main() {
                   },
                   move |g, display, egui_glium| {
                       let mut frame = display.draw();
-                      g.game_state.renderer.render(&display, &mut g.game_state.game_objects, &mut frame);
+                      g.game_state.renderer.render(&mut g.game_state.game_objects, &mut frame);
                       ui.redraw(&mut g.game_state, g.frame_rate, display, &g.window, egui_glium, &mut frame);
                       frame.finish().unwrap();
                   },

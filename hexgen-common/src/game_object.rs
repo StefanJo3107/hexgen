@@ -4,7 +4,6 @@ use crate::transform::{Rotation, Scale, Translation};
 use crate::vector3::Vector3;
 use std::cell::RefCell;
 use std::rc::Rc;
-use tracing::info;
 
 pub struct GameObject {
     name: String,
@@ -65,7 +64,7 @@ impl GameObject {
             [position.x, position.y, position.z, 1.0],
         ]);
 
-        let mut matrix = translate_matrix * yaw_matrix * pitch_matrix * roll_matrix * scale_matrix;
+        let matrix = translate_matrix * yaw_matrix * pitch_matrix * roll_matrix * scale_matrix;
         matrix
     }
 
